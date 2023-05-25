@@ -1,7 +1,6 @@
 const express = require('express')
 
 const app = express();
-const PORT = 5000;
 
 //Importing routes
 const productRouter = require('./routes/product.js')
@@ -10,7 +9,13 @@ const errorRouter = require('./routes/error.js')
 const cors = require('cors')
 const morgan =  require('morgan')
 const logger = require('./middleware/logger')
+const connectDatabase = require('./database/connection.js')
 
+//Setting Up environment in our project.
+require('dotenv').config();
+
+//DB Connection
+connectDatabase();
 
 app.use(cors())
 
@@ -23,9 +28,9 @@ app.use(homeRouter)
 app.use('/api/products', productRouter)
 app.use(errorRouter)
 
-app.listen(PORT, () => {
-    console.log(`Server Started at Port ${PORT}`)
+app.listen(process.env.PORT, () => {
+    console.log(`Server Started at Port ${process.env.PORT}`)
 
 })
-console.log("Test")
+//console.log("Test")
 
