@@ -1,44 +1,49 @@
-const productData = require('../data/products.json');
+//const productData = require('../data/products.json');
+
+const ProductModel = require("../models/product");
 
 const home = (req, res) => {
     res.send("Welcome To The ECOMMERCE SITE...")
 }
 
-const getAllProducts = (req, res) => {
-    console.log(req.query)
-    const { category } = req.query;
-    const { minPrice } = req.query;
-    //Apply Filter
-    if (category && minPrice) {
-        const filteredData = productData.filter((element) => {
-            return element.category === category && element.price >= minPrice
-            //return element.category === category;_
-        })
-        res.json(filteredData)
-    }
-    else if (category) {
-        const filteredData = productData.filter((element) => {
-            return element.category === category
-        })
-        res.json(filteredData)
+const getAllProducts = async (req, res) => {
+    const { category, minPrice } = req.query;
+    try {
+        //Apply Filter
+        if (category && minPrice) {
+            const filteredData = await ProductModel.find({ category, price: minPrice, });
+            res.json(filteredData)
+        }
+        else if (category) {
+            const filteredData = await ProductModel.find({ category });
+            res.json(filteredData);
 
-    } else if (minPrice) {
-        const filteredData = productData.filter((element) => {
-            return element.price >= minPrice
-        })
-        res.send(filteredData)
-    }
-
-    else {
-        res.json(productData)
+        } else if (minPrice) {
+            const filteredData = await ProductModel.find({ price: minPrice });
+            res.json(filteredData)
+        }
+        else {
+            const productData = await ProductModel.find();
+            res.json(productData)
+        }
+    } catch (err) {
+        res.status(500).json({ message: "Something went Wrong", error: err });
     }
 }
-const getSingleProducts = (req, res) => {
-    console.log(req.params)
-    const { productID } = req.params;
-    const product = productData.find((product) => product.id === Number(productID))
-    res.json(product ? product : "Index Not Found")
-}
+
+    const getSingleProducts = async (req, res) => {
+        try {
+            const { productID } = req.params;
+            const product = await ProductModel.findById(productID)
+            res.json(product ? product : "Data Not Found")
+
+        } catch (err) {
+            console.log('Something Went Wrong....')
+        
+        res.status(500).json({ message: "Something Went Wrong ", error: err });
+
+    }
+};
 
 const createProducts = (req, res) => {
     res.send('This api will create a product in database')
@@ -62,5 +67,4 @@ module.exports = {
     replaceProducts,
     updateProducts,
     deleteProducts
-
 }
