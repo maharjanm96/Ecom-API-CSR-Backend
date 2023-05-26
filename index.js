@@ -18,10 +18,9 @@ require('dotenv').config();
 connectDatabase();
 
 app.use(cors())
-
 app.use(logger);
-
 app.use(morgan('dev'));
+app.use(express.json())
 
 //Link the router file
 app.use(homeRouter)
