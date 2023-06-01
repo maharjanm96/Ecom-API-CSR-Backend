@@ -2,18 +2,19 @@ const express = require('express');
 
 const { getAllProducts, getSingleProducts, createProducts, replaceProducts, updateProducts, deleteProducts } = require('../controllers/product');
 
-const checkAPI = require('../middleware/auth')
+const { checkAPIKey,verifyTokenAdmin } = require('../middleware/auth')
 //Initialize router object.
 const router = express.Router();
 
 
 
-router.get("/", checkAPI, getAllProducts)
+router.get("/", checkAPIKey, getAllProducts)
 router.get("/:productID", getSingleProducts)
-router.post('/', createProducts)
-router.put('/:productID', replaceProducts)
-router.patch('/:productID', updateProducts)
-router.delete('/:productID', deleteProducts)
+
+router.post('/', verifyTokenAdmin, createProducts)
+router.put('/:productID', verifyTokenAdmin, replaceProducts)
+router.patch('/:productID', verifyTokenAdmin, updateProducts)
+router.delete('/:productID', verifyTokenAdmin, deleteProducts)
 
 
 module.exports = router;

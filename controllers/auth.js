@@ -24,8 +24,8 @@ const loginUser = async (req, res) => {
             //If entered password is also correct
             if (isValidPassword) {
                 const accessToken = jwt.sign(
-                    { id: user._id, isAdmin: user.isAdmin },
-                    process.env.JWT_SECRET,
+                    {id: user._id, isAdmin: user.isAdmin }, 
+                    process.env.JWT_SECRET, 
                     { expiresIn: "1d" });
                 const { password, ...rest } = user._doc;
                 res.cookie("jwt", accessToken)
